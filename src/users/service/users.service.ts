@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UserInterface } from '../interfaces/user.interface';
-import { User } from '../model/user.model';
+import { Rank, User } from '../model/user.model';
 import { UserServiceInterface } from '../interfaces/users.repository.interface';
 import { NotFoundError } from 'rxjs';
 
@@ -10,7 +10,10 @@ export class UsersService implements UserServiceInterface{
         const user = new User();
         user.email = data.email;
         user.name = data.name;
-        user.password = data.password
+        user.password = data.password;
+        user.rank = Rank.RECRUTA;
+        user.wins = 0;
+        user.hordesDefeated = 0
 
         await user.save()
 
