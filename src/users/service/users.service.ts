@@ -22,4 +22,10 @@ export class UsersService implements UserServiceInterface{
 
         return user;
     }
+
+    async findById(id:string): Promise<User> {
+        const user = await User.findOneBy({ id })
+        if (!user) throw new NotFoundException('Usuário não encontrado')
+        return user
+    }
 }

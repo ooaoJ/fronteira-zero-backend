@@ -7,10 +7,13 @@ import { UsersService } from 'src/users/service/users.service';
 import { UsersModule } from 'src/users/users.module';
 import { BcriptHash } from './services/bcript.service';
 import { JwtAuthService } from './services/jwt.service';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
     imports: [
        UsersModule, 
+       PassportModule,
        JwtModule.registerAsync({
         inject: [ConfigService],
         useFactory: (config: ConfigService) => ({
@@ -21,6 +24,7 @@ import { JwtAuthService } from './services/jwt.service';
     ],
     providers: [
         AuthService,
+        JwtStrategy,
         UsersService,
         {
             provide: 'USER_SERVICE',
