@@ -3,9 +3,11 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RoomsModule } from './rooms/rooms.module';
+import { AlliancesModule } from './alliances/alliance.module'
 
 @Module({
-  imports: [UsersModule, AuthModule, ConfigModule.forRoot({
+  imports: [UsersModule, AuthModule, RoomsModule, AlliancesModule, ConfigModule.forRoot({
     isGlobal: true
   }),
     TypeOrmModule.forRootAsync({

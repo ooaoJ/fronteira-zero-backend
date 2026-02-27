@@ -38,8 +38,14 @@ export class User extends BaseEntity {
   rank: Rank
 
   @Column({ type: 'int', default: 0 })
+  xp: number
+
+  @Column({ type: 'int', default: 0 })
   wins: number
 
   @Column({ type: 'int', default: 0 })
   hordesDefeated: number
+
+  @Column({ type: 'int', default: 1})
+  avatarId: number
 }
