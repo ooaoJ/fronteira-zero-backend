@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoomsModule } from './rooms/rooms.module';
 import { AlliancesModule } from './alliances/alliance.module'
+import { ResourcesModule } from './resources/resources.module';
 
 @Module({
   imports: [UsersModule, AuthModule, RoomsModule, AlliancesModule, ConfigModule.forRoot({
@@ -22,6 +23,7 @@ import { AlliancesModule } from './alliances/alliance.module'
         autoLoadEntities: true,
         synchronize: true
       })
-    }),],
+    }),
+    ResourcesModule,],
 })
 export class AppModule { }
