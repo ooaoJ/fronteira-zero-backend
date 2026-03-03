@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -7,94 +7,91 @@ import { RoomPlayer } from '../model/room-player.model';
 
 @Injectable()
 export class RoomsService {
-    constructor(
-        @InjectRepository(Room)
-        private readonly roomRepository: Repository<Room>,
+  constructor(
+    @InjectRepository(Room)
+    private readonly roomRepository: Repository<Room>,
 
-        @InjectRepository(RoomPlayer)
-        private readonly roomPlayerRepository: Repository<RoomPlayer>,
-    ) { }
+    @InjectRepository(RoomPlayer)
+    private readonly roomPlayerRepository: Repository<RoomPlayer>,
+  ) {}
 
-    private maxPlayersForMode(mode: RoomMode) {
-        return mode === RoomMode.BLITZ ? 10 : 20;
+  private maxPlayersForMode(mode: RoomMode) {
+    return mode === RoomMode.BLITZ ? 10 : 20;
+  }
+
+  private async ensureJoinableWaitingRoom(mode: RoomMode) {
+    const joinableCount = await this.roomRepository
+      .createQueryBuilder('room')
+      .leftJoin('room.players', 'players')
+      .where('room.mode = :mode', { mode })
+      .andWhere('room.status = :status', { status: RoomStatus.WAITING })
+      .groupBy('room.id')
+      .having('COUNT(players.id) < room.maxPlayers')
+      .getCount();
+
+    if (joinableCount === 0) {
+      const room = this.roomRepository.create({
+        mode,
+        status: RoomStatus.WAITING,
+        maxPlayers: this.maxPlayersForMode(mode),
+      });
+      await this.roomRepository.save(room);
+    }
+  }
+
+  async listWaitingRooms(mode: RoomMode) {
+    await this.ensureJoinableWaitingRoom(mode);
+
+    // só salas WAITING com vaga (lotadas não aparecem)
+    return this.roomRepository
+      .createQueryBuilder('room')
+      .leftJoinAndSelect('room.players', 'players')
+      .where('room.mode = :mode', { mode })
+      .andWhere('room.status = :status', { status: RoomStatus.WAITING })
+      .groupBy('room.id')
+      .having('COUNT(players.id) < room.maxPlayers')
+      .orderBy('room.createdAt', 'ASC')
+      .getMany();
+  }
+
+  async joinRoomByRoomId(userId: string, roomId: string) {
+    const room = await this.roomRepository.findOne({
+      where: { id: roomId },
+      relations: ['players'],
+    });
+
+    if (!room) throw new NotFoundException('Room not found');
+    if (room.status !== RoomStatus.WAITING) throw new BadRequestException('Room is not joinable');
+
+    if (room.players.length >= room.maxPlayers) {
+      throw new BadRequestException('Room is full');
     }
 
-    private async ensureWaitingRoom(mode: RoomMode) {
-        const waitingCount = await this.roomRepository.count({
-            where: { mode, status: RoomStatus.WAITING },
-        });
+    const existing = await this.roomPlayerRepository.findOne({
+      where: { roomId: room.id, userId },
+    });
 
-        if (waitingCount === 0) {
-            const room = this.roomRepository.create({
-                mode,
-                status: RoomStatus.WAITING,
-                maxPlayers: this.maxPlayersForMode(mode),
-            });
-
-            await this.roomRepository.save(room);
-        }
+    if (!existing) {
+      const rp = this.roomPlayerRepository.create({
+        roomId: room.id,
+        userId,
+      });
+      await this.roomPlayerRepository.save(rp);
     }
 
-    async listWaitingRooms(mode: RoomMode) {
-        await this.ensureWaitingRoom(mode);
+    const updatedRoom = await this.roomRepository.findOne({
+      where: { id: room.id },
+      relations: ['players'],
+    });
 
-        return this.roomRepository.find({
-            where: { mode, status: RoomStatus.WAITING },
-            relations: ['players'],
-            order: { createdAt: 'ASC' },
-        });
+    if (!updatedRoom) throw new Error('Room not found after join');
+
+    if (updatedRoom.players.length >= updatedRoom.maxPlayers) {
+      updatedRoom.status = RoomStatus.STARTED;
+      updatedRoom.startedAt = new Date();
+      await this.roomRepository.save(updatedRoom);
     }
 
-    async joinRoom(userId: string, mode: RoomMode) {
-        await this.ensureWaitingRoom(mode);
-
-        const rooms = await this.roomRepository.find({
-            where: { mode, status: RoomStatus.WAITING },
-            relations: ['players'],
-            order: { createdAt: 'ASC' },
-        });
-
-        let room = rooms.find((r) => r.players.length < r.maxPlayers);
-
-        if (!room) {
-            room = this.roomRepository.create({
-                mode,
-                status: RoomStatus.WAITING,
-                maxPlayers: this.maxPlayersForMode(mode),
-            });
-
-            await this.roomRepository.save(room);
-        }
-
-        const existing = await this.roomPlayerRepository.findOne({
-            where: { roomId: room.id, userId },
-        });
-
-        if (!existing) {
-            const roomPlayer = this.roomPlayerRepository.create({
-                roomId: room.id,
-                userId,
-            });
-
-            await this.roomPlayerRepository.save(roomPlayer);
-        }
-
-        const updatedRoom = await this.roomRepository.findOne({
-            where: { id: room.id },
-            relations: ['players'],
-        });
-
-        if (!updatedRoom) {
-            throw new Error('Room not found after join');
-        }
-
-        // se encheu, inicia
-        if (updatedRoom.players.length >= updatedRoom.maxPlayers) {
-            updatedRoom.status = RoomStatus.STARTED;
-            updatedRoom.startedAt = new Date();
-            await this.roomRepository.save(updatedRoom);
-        }
-
-        return updatedRoom;
-    }
+    return updatedRoom;
+  }
 }

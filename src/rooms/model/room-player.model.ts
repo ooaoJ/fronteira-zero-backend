@@ -1,8 +1,9 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn } from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, Unique } from "typeorm";
 import { Room } from "./room.model";
 import { User } from "../../users/model/user.model";
 
 @Entity('room_players')
+@Unique('UQ_room_user', ['roomId', 'userId'])
 export class RoomPlayer extends BaseEntity {
 
     @PrimaryGeneratedColumn()
