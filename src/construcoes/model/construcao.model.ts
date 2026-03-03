@@ -1,6 +1,6 @@
-import { BaseEntity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
-export class Contrucao extends BaseEntity{
+export class Construcao extends BaseEntity{
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -11,5 +11,31 @@ export class Contrucao extends BaseEntity{
     })
     name: string
 
+    @Column({
+        type: 'integer',
+        nullable: false
+    })
+    base_life: number
     
+    @Column({
+        type: 'integer',
+        nullable: false
+    })
+    construction_time: number
+
+    @Column({
+        type: 'integer',
+        nullable: true
+    })
+    base_noise: number
+
+    @ManyToOne(() => Construcao, {nullable: true})
+    @JoinColumn({name: 'prerequisite_id'})
+    prerequisite: Construcao
+
+    @Column({
+        type: 'varchar'
+    })
+    prerequisite_id: string
+
 }
