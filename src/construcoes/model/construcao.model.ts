@@ -1,5 +1,6 @@
-import { BaseEntity, Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
+@Entity('constructions')
 export class Construcao extends BaseEntity{
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -32,10 +33,5 @@ export class Construcao extends BaseEntity{
     @ManyToOne(() => Construcao, {nullable: true})
     @JoinColumn({name: 'prerequisite_id'})
     prerequisite: Construcao
-
-    @Column({
-        type: 'varchar'
-    })
-    prerequisite_id: string
 
 }
