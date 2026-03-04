@@ -30,6 +30,12 @@ export class Construcao extends BaseEntity{
     })
     base_noise: number
 
+    @Column({
+        type: "varchar",
+        nullable: true
+    })
+    efect: string
+
     @ManyToOne(() => Construcao, {nullable: true})
     @JoinColumn({name: 'prerequisite_id'})
     prerequisite: Construcao
