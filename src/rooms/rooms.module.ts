@@ -15,6 +15,6 @@ import { BullModule } from '@nestjs/bull'
     ],
     controllers: [RoomsController],
     providers: [RoomsService],
-    exports: [RoomsService],
+    exports: [RoomsService, RoomPlayer],
 })
 export class RoomsModule { }
