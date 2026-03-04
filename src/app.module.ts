@@ -7,6 +7,7 @@ import { RoomsModule } from './rooms/rooms.module';
 import { AlliancesModule } from './alliances/alliance.module'
 import { ResourcesModule } from './resources/resources.module';
 import { BullModule } from '@nestjs/bull'
+import { ConstrucoesModule } from './construcoes/construcoes.module';
 
 @Module({
   imports: [
@@ -35,6 +36,6 @@ import { BullModule } from '@nestjs/bull'
         synchronize: true
       })
     }),
-    ResourcesModule,],
+    ResourcesModule,ConstrucoesModule],
 })
 export class AppModule { }
