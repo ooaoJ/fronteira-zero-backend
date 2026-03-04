@@ -8,6 +8,7 @@ import { AlliancesModule } from './alliances/alliance.module'
 import { ResourcesModule } from './resources/resources.module';
 import { BullModule } from '@nestjs/bull'
 import { ConstrucoesModule } from './construcoes/construcoes.module';
+import { ConstructionInGameModule } from './construction_in_game/construction_in_game.module';
 
 @Module({
   imports: [
@@ -36,6 +37,6 @@ import { ConstrucoesModule } from './construcoes/construcoes.module';
         synchronize: true
       })
     }),
-    ResourcesModule,ConstrucoesModule],
+    ResourcesModule,ConstrucoesModule, ConstructionInGameModule],
 })
 export class AppModule { }
