@@ -26,4 +26,7 @@ export class RoomPlayer extends BaseEntity {
 
     @ManyToOne(() => User, { onDelete: 'CASCADE' })
     user: User
+
+    @CreateDateColumn()
+    createdAt: Date
 }

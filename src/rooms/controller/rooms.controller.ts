@@ -13,6 +13,11 @@ export class RoomsController {
     return this.roomsService.listWaitingRooms(mode)
   }
 
+  @Get('me')
+  async myRooms(@Req() req: any) {
+    return this.roomsService.listMyRooms(req.user.id)
+  }
+
   @Post(':roomId/join')
   async joinRoomById(@Req() req, @Param('roomId') roomId: string) {
     const userId = req.user.id;
