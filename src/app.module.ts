@@ -15,7 +15,11 @@ import { ConstructionInGameModule } from './construction_in_game/construction_in
     BullModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        redis: config.get("REDIS_HOST"),
+        redis: {
+          host: config.get("REDIS_HOST"),
+          port: config.get("REDIS_PORT") || 6379, 
+          password: config.get("REDIS_PASSWORD"), 
+      },
         defaultJobOptions: {
           attempts: 3
         }
