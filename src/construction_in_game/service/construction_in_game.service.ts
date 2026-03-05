@@ -4,38 +4,58 @@ import { ConstructionInGame } from "../model/construction_in_game.model";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "src/users/model/user.model";
 import { Construcao } from "src/construcoes/model/construcao.model";
+import { InjectQueue } from "@nestjs/bull";
+import type { Queue } from "bull";
+import { RoomPlayer } from "src/rooms/model/room-player.model";
+import { RoomPlayerRepositoryCustom } from "src/rooms/repository/room.player.repository";
 
 @Injectable()
-
 export class ConstructionInGameService {
     constructor(
         @InjectRepository(ConstructionInGame)
         private readonly constructionInGameRepository: Repository<ConstructionInGame>,
 
         @InjectRepository(Construcao)
-        private readonly constructionBluePrintRepository: Repository<Construcao>
-    ) {}
+        private readonly constructionBluePrintRepository: Repository<Construcao>,
 
-    private async build(user: User, constructionId: string): Promise<ConstructionInGame> {
+        private readonly roomUserRepository: RoomPlayerRepositoryCustom,
+
+        @InjectQueue("building-queue")
+        private readonly buildingQueue: Queue
+    ) { }
+
+    async build(user: User, constructionId: string, roomId: string): Promise<ConstructionInGame> {
         const construct = await this.constructionBluePrintRepository.findOne({
             where: {
                 id: constructionId
             }
         })
 
-        if(!construct){
+        if (!construct) {
             throw new NotFoundException("Construcao nao encontrada")
         }
+        
+        const roomPlayerId: number = await this.roomUserRepository.isPlayerInRoom(user.id, roomId)
 
-       const constructIngame = await this.constructionInGameRepository.save({
+        const constructIngame = await this.constructionInGameRepository.save({
             constructionBluePrint: construct,
-            roomPlayerId: user.id,
+            roomPlayer: {id: roomPlayerId},
             current_life: construct.base_life,
             current_atk: construct.base_atk,
             current_def: construct.base_def
         });
 
-        return constructIngame
+        this.buildingQueue.add('finalize-build',
+            {
+                constructionInGameId: constructIngame.id,
+                userId: user.id
+            },
+            {
+                delay: construct.construction_time
+            }
+        );
 
-    } 
+        return constructIngame;
+
+    }
 }

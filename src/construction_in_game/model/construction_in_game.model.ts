@@ -2,6 +2,13 @@ import { Construcao } from "src/construcoes/model/construcao.model";
 import { RoomPlayer } from "src/rooms/model/room-player.model";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
+export enum Status {
+    PENDING = "pending",
+    BUILDING = "building",
+    BUILT = "built",
+    DAMAGED = "damaged"
+}
+
 @Entity('constructions_in_game')
 export class ConstructionInGame {
     @PrimaryGeneratedColumn('uuid')
@@ -26,6 +33,14 @@ export class ConstructionInGame {
         nullable: true
     })
     current_atk: number
+
+    @Column({
+        type: "enum",
+        enum: Status,
+        nullable: false,
+        default: Status.BUILDING
+    })
+    status: Status
 
     @Column({
         type: "float",
