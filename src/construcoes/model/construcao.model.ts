@@ -13,11 +13,23 @@ export class Construcao extends BaseEntity{
     name: string
 
     @Column({
-        type: 'integer',
+        type: 'float',
         nullable: false
     })
     base_life: number
     
+    @Column({
+        type: 'float',
+        nullable: false
+    })
+    base_atk: number
+
+    @Column({
+        type: 'float',
+        nullable: false
+    })
+    base_def: number
+
     @Column({
         type: 'integer',
         nullable: false
