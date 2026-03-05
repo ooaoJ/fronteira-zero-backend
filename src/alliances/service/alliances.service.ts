@@ -45,6 +45,7 @@ export class AlliancesService {
         name: u.name,
         rank: u.rank,
         xp: u.xp ?? 0,
+        avatarId: (u as any).avatarId,
       })),
     };
   }
@@ -101,7 +102,8 @@ export class AlliancesService {
         id: u.id,
         name: u.name,
         rank: u.rank,
-        xp: u.xp ?? 0,
+        xp: u.xp,
+        avatarId: (u as any).avatarId,
       })),
       messages: messagesWithNames,
     };
