@@ -6,11 +6,11 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller('rooms')
 @UseGuards(AuthGuard('jwt'))
 export class RoomsController {
-  constructor(private readonly roomsService: RoomsService) {}
+  constructor(private readonly roomsService: RoomsService) { }
 
   @Get()
   async listRooms(@Query('mode') mode: RoomMode) {
-    return this.roomsService.listWaitingRooms(mode);
+    return this.roomsService.listWaitingRooms(mode)
   }
 
   @Post(':roomId/join')
