@@ -5,6 +5,6 @@ import { Resource } from './model/resource.model';
 @Module({
     imports: [
         TypeOrmModule.forFeature([Resource])
-    ]
+    ],
 })
 export class ResourcesModule {}

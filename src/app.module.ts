@@ -9,6 +9,7 @@ import { ResourcesModule } from './resources/resources.module';
 import { BullModule } from '@nestjs/bull'
 import { ConstrucoesModule } from './construcoes/construcoes.module';
 import { ConstructionInGameModule } from './construction_in_game/construction_in_game.module';
+import { PlayerResourceModule } from './player_resource/player_resource.module';
 
 @Module({
   imports: [
@@ -41,6 +42,6 @@ import { ConstructionInGameModule } from './construction_in_game/construction_in
         synchronize: true
       })
     }),
-    ResourcesModule,ConstrucoesModule, ConstructionInGameModule],
+    ResourcesModule,ConstrucoesModule, ConstructionInGameModule, PlayerResourceModule],
 })
 export class AppModule { }
