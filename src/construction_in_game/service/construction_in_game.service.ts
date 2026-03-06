@@ -34,12 +34,12 @@ export class ConstructionInGameService {
         if (!construct) {
             throw new NotFoundException("Construcao nao encontrada")
         }
-        
+
         const roomPlayerId: number = await this.roomUserRepository.isPlayerInRoom(user.id, roomId)
 
         const constructIngame = await this.constructionInGameRepository.save({
             constructionBluePrint: construct,
-            roomPlayer: {id: roomPlayerId},
+            roomPlayer: { id: roomPlayerId },
             current_life: construct.base_life,
             current_atk: construct.base_atk,
             current_def: construct.base_def
@@ -56,6 +56,16 @@ export class ConstructionInGameService {
         );
 
         return constructIngame;
+    }
 
+    async findAllConstructions(userId: string, roomId: string): Promise<ConstructionInGame[]> {
+        const roomPlayerId: number = await this.roomUserRepository.isPlayerInRoom(userId, roomId);
+
+        return await this.constructionInGameRepository.find({
+            where: {
+                roomPlayer: { id: roomPlayerId }
+            },
+            relations: ['constructionBluePrint']
+        });
     }
 }
