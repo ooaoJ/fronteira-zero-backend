@@ -7,12 +7,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConstructionInGame } from './model/construction_in_game.model';
 import { Construcao } from 'src/construcoes/model/construcao.model';
 import { ConstructionInGameConsumer } from './job/constructions_in_game.consumer';
+import { PlayerResourceModule } from 'src/player_resource/player_resource.module';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([ConstructionInGame, Construcao]),
         BullModule.registerQueue({name: "building-queue"}),
-        RoomsModule
+        RoomsModule,
+        PlayerResourceModule
     ],
     providers: [ConstructionInGameService, ConstructionInGameConsumer],
     controllers: [ConstructionInGameController]
