@@ -20,7 +20,6 @@ export class ConstructionInGameConsumer{
 
     @Process('finalize-build')
     async notifyBuild({data}: Job<SendBuildConsumer>) {
-        console.log("Pegue o JOB!!!!");
         this.constructionInGameRepository.update(
             { id: data.constructionInGameId },
             { status: Status.BUILT }
