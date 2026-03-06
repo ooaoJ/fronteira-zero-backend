@@ -1,4 +1,4 @@
-import { Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Param, Post, Req, UseGuards, Get } from '@nestjs/common';
 import { ConstructionInGameService } from '../service/construction_in_game.service';
 import { ConstructionInGame } from '../model/construction_in_game.model';
 import { AuthGuard } from '@nestjs/passport';
@@ -15,5 +15,9 @@ export class ConstructionInGameController {
         const constructionInGame = await this.constructionInGameService.build(Req.user, constuctionBluePrintID, roomId);
 
         return constructionInGame
+    }
+    @Get('/room/:roomId')
+    async findAllConstructions(@Req() Req, @Param('roomId') roomId: string): Promise<ConstructionInGame[]> {
+        return await this.constructionInGameService.findAllConstructions(Req.user.id, roomId);
     }
 }
