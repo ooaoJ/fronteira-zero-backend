@@ -1,5 +1,5 @@
-import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Resource } from "src/resources/model/resource.model";
+import { BaseEntity, Column, Entity, JoinColumn, OneToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ConstrucaoCustoResource } from "src/construcao_custo_resource/model/construcao_custo_resource.model";
 
 @Entity('constructions')
 export class Construcao extends BaseEntity {
@@ -49,19 +49,8 @@ export class Construcao extends BaseEntity {
     })
     efect: string
 
-    @ManyToMany(() => Resource)
-    @JoinTable({
-        name: 'construction_resources',
-        joinColumn: { name: 'construction_id', referencedColumnName: 'id' },
-        inverseJoinColumn: { name: 'resource_id', referencedColumnName: 'id' }
-    })
-    resources: Resource
-
-    @Column({
-        type: 'integer',
-        nullable: false
-    })
-    cost: number
+    @OneToMany(() => ConstrucaoCustoResource, construcaoCusto => construcaoCusto.construction)
+    costs: ConstrucaoCustoResource[];
 
     @ManyToOne(() => Construcao, { nullable: true })
     @JoinColumn({ name: 'prerequisite_id' })

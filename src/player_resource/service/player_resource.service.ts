@@ -31,5 +31,20 @@ export class PlayerResourceService {
 
         return playerResource.amount >= data.amount
     }
+    async deductAmount(data: verifyAmountData): Promise<void> {
+        const playerResource = await this.playerResourceRepository.findOne({
+            where: {
+                roomPlayer: { id: data.playerID },
+                resouerce: { id: data.resourceId }
+            }
+        })
+
+        if (!playerResource) {
+            throw new NotFoundException("Recurso nao encontrado")
+        }
+
+        playerResource.amount -= data.amount
+        await this.playerResourceRepository.save(playerResource)
+    }
 
 }

@@ -31,7 +31,8 @@ export class ConstructionInGameService {
         const construct = await this.constructionBluePrintRepository.findOne({
             where: {
                 id: constructionId
-            }
+            },
+            relations: ['costs', 'costs.resource']
         })
 
         if (!construct) {
@@ -40,14 +41,26 @@ export class ConstructionInGameService {
 
         const roomPlayerId: number = await this.roomUserRepository.isPlayerInRoom(user.id, roomId)
 
-        const verifyAmount = this.playerResourceService.verifyAmount({
-            resourceId: construct.resources.id,
-            amount: construct.cost,
-            playerID: roomPlayerId
-        })
+        if (construct.costs && construct.costs.length > 0) {
+            for (const cost of construct.costs) {
+                const verifyAmount = await this.playerResourceService.verifyAmount({
+                    resourceId: cost.resource.id,
+                    amount: cost.amount,
+                    playerID: roomPlayerId
+                })
 
-        if (!verifyAmount) {
-            throw new BadRequestException("Recurso insuficiente")
+                if (!verifyAmount) {
+                    throw new BadRequestException("Recurso insuficiente")
+                }
+            }
+
+            for (const cost of construct.costs) {
+                await this.playerResourceService.deductAmount({
+                    resourceId: cost.resource.id,
+                    amount: cost.amount,
+                    playerID: roomPlayerId
+                })
+            }
         }
 
         const constructIngame = await this.constructionInGameRepository.save({
