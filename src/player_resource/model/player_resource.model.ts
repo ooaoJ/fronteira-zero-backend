@@ -10,17 +10,17 @@ export class PlayerResource {
     @PrimaryGeneratedColumn('uuid')
     id: string
 
-    @ManyToOne(() => RoomPlayer, {nullable: false, onDelete: "CASCADE"})
-    @JoinColumn({ name: 'roomId' })
+    @ManyToOne(() => RoomPlayer, { nullable: false, onDelete: "CASCADE" })
+    @JoinColumn({ name: 'roomPlayerId' })
     roomPlayer: RoomPlayer
-    
-    @ManyToOne(() => Resource, {nullable: false, onDelete: "CASCADE"})
+
+    @ManyToOne(() => Resource, { nullable: false, onDelete: "CASCADE" })
     @JoinColumn({ name: 'resourceId' })
     resouerce: Resource
 
     @Column({
-       type: "float",
-       nullable: false 
+        type: "float",
+        nullable: false
     })
     amount: number
 }
