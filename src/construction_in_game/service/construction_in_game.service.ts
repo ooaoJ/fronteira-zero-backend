@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { ConstructionInGame } from "../model/construction_in_game.model";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -8,6 +8,7 @@ import { InjectQueue } from "@nestjs/bull";
 import type { Queue } from "bull";
 import { RoomPlayer } from "src/rooms/model/room-player.model";
 import { RoomPlayerRepositoryCustom } from "src/rooms/repository/room.player.repository";
+import { PlayerResourceService } from "src/player_resource/service/player_resource.service";
 
 @Injectable()
 export class ConstructionInGameService {
@@ -19,6 +20,8 @@ export class ConstructionInGameService {
         private readonly constructionBluePrintRepository: Repository<Construcao>,
 
         private readonly roomUserRepository: RoomPlayerRepositoryCustom,
+
+        private readonly playerResourceService: PlayerResourceService,
 
         @InjectQueue("building-queue")
         private readonly buildingQueue: Queue
@@ -36,6 +39,16 @@ export class ConstructionInGameService {
         }
 
         const roomPlayerId: number = await this.roomUserRepository.isPlayerInRoom(user.id, roomId)
+
+        const verifyAmount = this.playerResourceService.verifyAmount({
+            resourceId: construct.resources.id,
+            amount: construct.cost,
+            playerID: roomPlayerId
+        })
+
+        if (!verifyAmount) {
+            throw new BadRequestException("Recurso insuficiente")
+        }
 
         const constructIngame = await this.constructionInGameRepository.save({
             constructionBluePrint: construct,
