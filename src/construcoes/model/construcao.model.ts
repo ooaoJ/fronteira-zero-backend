@@ -1,7 +1,8 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Resource } from "src/resources/model/resource.model";
 
 @Entity('constructions')
-export class Construcao extends BaseEntity{
+export class Construcao extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
@@ -17,7 +18,7 @@ export class Construcao extends BaseEntity{
         nullable: false
     })
     base_life: number
-    
+
     @Column({
         type: 'float',
         nullable: false
@@ -48,8 +49,22 @@ export class Construcao extends BaseEntity{
     })
     efect: string
 
-    @ManyToOne(() => Construcao, {nullable: true})
-    @JoinColumn({name: 'prerequisite_id'})
+    @ManyToMany(() => Resource)
+    @JoinTable({
+        name: 'construction_resources',
+        joinColumn: { name: 'construction_id', referencedColumnName: 'id' },
+        inverseJoinColumn: { name: 'resource_id', referencedColumnName: 'id' }
+    })
+    resources: Resource
+
+    @Column({
+        type: 'integer',
+        nullable: false
+    })
+    cost: number
+
+    @ManyToOne(() => Construcao, { nullable: true })
+    @JoinColumn({ name: 'prerequisite_id' })
     prerequisite: Construcao
 
 }
