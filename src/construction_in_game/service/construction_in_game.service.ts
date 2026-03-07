@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { ConstructionInGame } from "../model/construction_in_game.model";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -42,25 +42,7 @@ export class ConstructionInGameService {
         const roomPlayerId: number = await this.roomUserRepository.isPlayerInRoom(user.id, roomId)
 
         if (construct.costs && construct.costs.length > 0) {
-            for (const cost of construct.costs) {
-                const verifyAmount = await this.playerResourceService.verifyAmount({
-                    resourceId: cost.resource.id,
-                    amount: cost.amount,
-                    playerID: roomPlayerId
-                })
-
-                if (!verifyAmount) {
-                    throw new BadRequestException("Recurso insuficiente")
-                }
-            }
-
-            for (const cost of construct.costs) {
-                await this.playerResourceService.deductAmount({
-                    resourceId: cost.resource.id,
-                    amount: cost.amount,
-                    playerID: roomPlayerId
-                })
-            }
+            await this.playerResourceService.consumeResources(construct.costs, roomPlayerId);
         }
 
         const constructIngame = await this.constructionInGameRepository.save({
