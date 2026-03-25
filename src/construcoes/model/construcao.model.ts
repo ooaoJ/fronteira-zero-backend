@@ -1,6 +1,17 @@
 import { BaseEntity, Column, Entity, JoinColumn, OneToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ConstrucaoCustoResource } from "src/construcao_custo_resource/model/construcao_custo_resource.model";
 
+enum statusType {
+    DEFESA = 'defesa',
+    ATAQUE = 'ataque',
+}
+
+type efectMetadata = {
+    type_efect: string,
+    status: statusType
+    value: number
+}
+
 @Entity('constructions')
 export class Construcao extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
@@ -44,10 +55,10 @@ export class Construcao extends BaseEntity {
     base_noise: number
 
     @Column({
-        type: "varchar",
+        type: "json",
         nullable: true
     })
-    efect: string
+    efects: string
 
     @OneToMany(() => ConstrucaoCustoResource, construcaoCusto => construcaoCusto.construction)
     costs: ConstrucaoCustoResource[];
