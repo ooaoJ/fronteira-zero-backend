@@ -11,6 +11,7 @@ import { ConstrucoesModule } from './construcoes/construcoes.module';
 import { ConstructionInGameModule } from './construction_in_game/construction_in_game.module';
 import { PlayerResourceModule } from './player_resource/player_resource.module';
 import { ConstrucaoCustoResourceModule } from './construcao_custo_resource/construcao_custo_resource.module';
+import { RoomPlayerStatsModule } from './room_player_stats/room_player_stats.module';
 
 @Module({
   imports: [
@@ -43,6 +44,6 @@ import { ConstrucaoCustoResourceModule } from './construcao_custo_resource/const
         synchronize: true
       })
     }),
-    ResourcesModule,ConstrucoesModule, ConstructionInGameModule, PlayerResourceModule, ConstrucaoCustoResourceModule],
+    ResourcesModule,ConstrucoesModule, ConstructionInGameModule, PlayerResourceModule, ConstrucaoCustoResourceModule, RoomPlayerStatsModule],
 })
 export class AppModule { }
