@@ -5,20 +5,20 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class RoomPlayerRepositoryCustom {
-    constructor (
+    constructor(
         @InjectRepository(RoomPlayer)
-        private readonly roomPlayerRepository: Repository<RoomPlayer> 
-    ) {}
+        private readonly roomPlayerRepository: Repository<RoomPlayer>
+    ) { }
 
-    async isPlayerInRoom(userId: string, roomId: string): Promise<number>{
+    async isPlayerInRoom(userId: string, roomId: string): Promise<RoomPlayer> {
         const roomUser = await this.roomPlayerRepository.findOne({
             where: { userId, roomId }
         })
 
-        if(!roomUser) {
+        if (!roomUser) {
             throw new NotFoundException("User nao encontrado na partida")
         }
 
-        return roomUser?.id;
+        return roomUser;
     }
 }
