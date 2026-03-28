@@ -8,15 +8,17 @@ import { ConstructionInGame } from './model/construction_in_game.model';
 import { Construcao } from 'src/construcoes/model/construcao.model';
 import { ConstructionInGameConsumer } from './job/constructions_in_game.consumer';
 import { PlayerResourceModule } from 'src/player_resource/player_resource.module';
+import { RoomPlayerStatsService } from 'src/room_player_stats/service/room_player_stats.service';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([ConstructionInGame, Construcao]),
-        BullModule.registerQueue({name: "building-queue"}),
+        BullModule.registerQueue({ name: "building-queue" }),
         RoomsModule,
-        PlayerResourceModule
+        PlayerResourceModule,
+        RoomPlayerStatsService
     ],
     providers: [ConstructionInGameService, ConstructionInGameConsumer],
     controllers: [ConstructionInGameController]
 })
-export class ConstructionInGameModule {}
+export class ConstructionInGameModule { }

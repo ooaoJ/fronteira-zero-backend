@@ -9,6 +9,7 @@ import type { Queue } from "bull";
 import { RoomPlayer } from "src/rooms/model/room-player.model";
 import { RoomPlayerRepositoryCustom } from "src/rooms/repository/room.player.repository";
 import { PlayerResourceService } from "src/player_resource/service/player_resource.service";
+import { RoomPlayerStatsService } from "src/room_player_stats/service/room_player_stats.service";
 
 @Injectable()
 export class ConstructionInGameService {
@@ -23,8 +24,10 @@ export class ConstructionInGameService {
 
         private readonly playerResourceService: PlayerResourceService,
 
+        private readonly roomPlayerStats: RoomPlayerStatsService,
+
         @InjectQueue("building-queue")
-        private readonly buildingQueue: Queue
+        private readonly buildingQueue: Queue,
     ) { }
 
     async build(user: User, constructionId: string, roomId: string): Promise<ConstructionInGame> {
@@ -53,17 +56,17 @@ export class ConstructionInGameService {
             current_def: construct.base_def
         });
 
-        this.buildingQueue.add('finalize-build',
-            {
-                constructionInGameId: constructIngame.id,
-                userId: user.id
-            },
-            {
-                delay: construct.construction_time
-            }
-        );
+        await this.buildDispatch(constructIngame.id, user.id, construct.construction_time);
 
         return constructIngame;
+    }
+
+    private async buildDispatch(constructionInGameId: string, userId: string, delay: number): Promise<void> {
+        await this.buildingQueue.add(
+            'finalize-build',
+            { constructionInGameId, userId },
+            { delay }
+        );
     }
 
     async findAllConstructions(userId: string, roomId: string): Promise<ConstructionInGame[]> {

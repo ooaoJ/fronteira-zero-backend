@@ -6,11 +6,6 @@ enum statusType {
     ATAQUE = 'ataque',
 }
 
-type efectMetadata = {
-    type_efect: string,
-    status: statusType
-    value: number
-}
 
 @Entity('constructions')
 export class Construcao extends BaseEntity {
@@ -58,7 +53,7 @@ export class Construcao extends BaseEntity {
         type: "json",
         nullable: true
     })
-    efects: string
+    efects: any[]
 
     @OneToMany(() => ConstrucaoCustoResource, construcaoCusto => construcaoCusto.construction)
     costs: ConstrucaoCustoResource[];
