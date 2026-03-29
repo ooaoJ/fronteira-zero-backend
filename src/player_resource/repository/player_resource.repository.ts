@@ -23,4 +23,9 @@ export class PlayerResourceRepository implements IPlayerResourceRepository {
     async save(playerResource: PlayerResource): Promise<PlayerResource> {
         return this.repository.save(playerResource);
     }
+
+    async create(playerResource: PlayerResource): Promise<PlayerResource> {
+        const playerResourceEntity = await this.repository.create(playerResource);
+        return await this.repository.save(playerResourceEntity);
+    }
 }

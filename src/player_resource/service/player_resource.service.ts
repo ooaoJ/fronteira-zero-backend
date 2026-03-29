@@ -5,6 +5,7 @@ import {
     PLAYER_RESOURCE_REPOSITORY
 } from '../interface/player_resource.repository.interface';
 import type { IPlayerResourceRepository } from '../interface/player_resource.repository.interface';
+import { CreateDataPlayerResource } from '../interface/player_resource.typess';
 
 type verifyAmountData = {
     resourceId: string,
@@ -41,6 +42,7 @@ export class PlayerResourceService {
                 playerID: playerID
             });
         }
+        return;
     }
 
     async verifyAmount(data: verifyAmountData): Promise<boolean> {
@@ -68,5 +70,10 @@ export class PlayerResourceService {
 
         playerResource.amount -= data.amount;
         await this.playerResourceRepository.save(playerResource);
+        return;
+    }
+
+    async createPlayerResource(data: CreateDataPlayerResource): Promise<PlayerResource> {
+        return await this.playerResourceRepository.create(data);
     }
 }
