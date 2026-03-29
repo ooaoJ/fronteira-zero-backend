@@ -7,4 +7,4 @@ import { Resource } from './model/resource.model';
         TypeOrmModule.forFeature([Resource])
     ],
 })
-export class ResourcesModule {}
+export class ResourcesModule { }

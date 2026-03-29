@@ -4,6 +4,9 @@ import { In, Repository, IsNull } from 'typeorm'
 
 import { Room, RoomMode, RoomStatus } from '../model/room.model'
 import { RoomPlayer } from '../model/room-player.model'
+import { Resource } from 'src/resources/model/resource.model'
+import { PlayerResourceRepository } from 'src/player_resource/repository/player_resource.repository'
+import { PlayerResourceService } from 'src/player_resource/service/player_resource.service'
 
 @Injectable()
 export class RoomsService {
@@ -13,7 +16,12 @@ export class RoomsService {
 
     @InjectRepository(RoomPlayer)
     private readonly roomPlayerRepository: Repository<RoomPlayer>,
-  ) {}
+
+    @InjectRepository(Resource)
+    private readonly resourceRepository: Repository<Resource>,
+
+    private readonly playerResourcService: PlayerResourceService
+  ) { }
 
   private maxPlayersForMode(mode: RoomMode) {
     return mode === RoomMode.BLITZ ? 10 : 20
@@ -121,12 +129,23 @@ export class RoomsService {
     }
 
     if (!existing) {
+      const resources = await this.resourceRepository.find();
+
       const rp = this.roomPlayerRepository.create({
         roomId: room.id,
         userId,
         leftAt: null as any,
       })
+
       await this.roomPlayerRepository.save(rp)
+
+      for (const resource of resources) {
+        let reosurceEntity = await this.playerResourcService.createPlayerResource({ roomPlayer: rp, resouerce: resource });
+        // console.log(reosurceEntity)
+      }
+
+      // process.exit();
+
     } else {
       existing.leftAt = null as any
       await this.roomPlayerRepository.save(existing)
@@ -145,6 +164,7 @@ export class RoomsService {
       updatedRoom.startedAt = new Date()
       await this.roomRepository.save(updatedRoom)
     }
+
 
     return updatedRoom
   }
