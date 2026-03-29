@@ -2,7 +2,7 @@ import { RoomPlayer } from "src/rooms/model/room-player.model";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity('room_player_stats')
-@Unique(['room_player_id'])
+@Unique(['room_player'])
 export class RoomPlayerStats {
     @PrimaryGeneratedColumn('uuid')
     id: string
