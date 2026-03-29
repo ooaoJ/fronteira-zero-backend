@@ -2,7 +2,7 @@ import { Process, Processor } from "@nestjs/bull";
 import { Injectable } from "@nestjs/common";
 import type { Job } from "bull";
 import { EffectStrategySelector } from "src/effects/selector";
-import { UpdatedStats } from "../interface/room_player_stats.types";
+import { UpdatedStats } from "src/room_player_stats/interface/room_player_stats.types";
 
 type SendUpdatedStats = UpdatedStats & {
     effectType: string

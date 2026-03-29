@@ -2,9 +2,6 @@ import { RoomPlayerStatsService } from "src/room_player_stats/service/room_playe
 import { IConstructionStrategy } from "../interface/construction.strategy.interface";
 import { UpdatedStats } from "src/room_player_stats/interface/room_player_stats.types";
 
-
-
-
 export class BuffEffectStrategy implements IConstructionStrategy {
     constructor(
         private readonly roomPlayerStatsService: RoomPlayerStatsService
