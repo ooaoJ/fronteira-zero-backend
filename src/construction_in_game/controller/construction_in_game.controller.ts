@@ -9,17 +9,17 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 @UseGuards(AuthGuard('jwt'))
 @Controller('construction-in-game')
 export class ConstructionInGameController {
-    constructor (
+    constructor(
         private readonly constructionInGameService: ConstructionInGameService
-    ) {}
+    ) { }
 
     @ApiOperation({ summary: 'Build a construction in a room' })
     @ApiResponse({ status: 201, description: 'The construction has been successfully started.', type: ConstructionInGame })
     @Post('/build/:constructionId/room/:roomId')
-    async build(@Req() Req, @Param('constructionId') constuctionBluePrintID: string, @Param('roomId') roomId: string): Promise<ConstructionInGame> {
+    async build(@Req() Req, @Param('constructionId') constuctionBluePrintID: string, @Param('roomId') roomId: string): Promise<object> {
         const constructionInGame = await this.constructionInGameService.build(Req.user, constuctionBluePrintID, roomId);
 
-        return constructionInGame
+        return { message: "success building your construction" };
     }
     @ApiOperation({ summary: 'Find all constructions in a room for the current user' })
     @ApiResponse({ status: 200, description: 'Return all constructions in the room.', type: [ConstructionInGame] })
