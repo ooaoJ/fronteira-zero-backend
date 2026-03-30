@@ -1,4 +1,4 @@
-import { RoomPlayer } from "src/rooms/model/room-player.model";
+import { RoomPlayer } from "src/room_player/model/room-player.model";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity('room_player_stats')

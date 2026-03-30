@@ -6,8 +6,8 @@ import { User } from "src/users/model/user.model";
 import { Construcao } from "src/construcoes/model/construcao.model";
 import { InjectQueue } from "@nestjs/bull";
 import type { Queue } from "bull";
-import { RoomPlayer } from "src/rooms/model/room-player.model";
-import { RoomPlayerRepositoryCustom } from "src/rooms/repository/room.player.repository";
+import { RoomPlayer } from "src/room_player/model/room-player.model";
+import { RoomPlayerRepositoryCustom } from "src/room_player/repository/room.player.repository";
 import { PlayerResourceService } from "src/player_resource/service/player_resource.service";
 import { RoomPlayerStatsService } from "src/room_player_stats/service/room_player_stats.service";
 

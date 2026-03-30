@@ -3,10 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository, IsNull } from 'typeorm'
 
 import { Room, RoomMode, RoomStatus } from '../model/room.model'
-import { RoomPlayer } from '../model/room-player.model'
+import { RoomPlayer } from 'src/room_player/model/room-player.model'
 import { Resource } from 'src/resources/model/resource.model'
 import { PlayerResourceRepository } from 'src/player_resource/repository/player_resource.repository'
 import { PlayerResourceService } from 'src/player_resource/service/player_resource.service'
+import { RoomPlayerStatsService } from 'src/room_player_stats/service/room_player_stats.service'
 
 @Injectable()
 export class RoomsService {
@@ -20,7 +21,9 @@ export class RoomsService {
     @InjectRepository(Resource)
     private readonly resourceRepository: Repository<Resource>,
 
-    private readonly playerResourcService: PlayerResourceService
+    private readonly playerResourcService: PlayerResourceService,
+
+    private readonly roomPlayerStatsService: RoomPlayerStatsService
   ) { }
 
   private maxPlayersForMode(mode: RoomMode) {
@@ -139,12 +142,11 @@ export class RoomsService {
 
       await this.roomPlayerRepository.save(rp)
 
-      for (const resource of resources) {
-        let reosurceEntity = await this.playerResourcService.createPlayerResource({ roomPlayer: rp, resouerce: resource });
-        // console.log(reosurceEntity)
-      }
+      await this.roomPlayerStatsService.createRoomPlayerStats({ room_player: rp });
 
-      // process.exit();
+      for (const resource of resources) {
+        await this.playerResourcService.createPlayerResource({ roomPlayer: rp, resouerce: resource });
+      }
 
     } else {
       existing.leftAt = null as any
@@ -164,7 +166,6 @@ export class RoomsService {
       updatedRoom.startedAt = new Date()
       await this.roomRepository.save(updatedRoom)
     }
-
 
     return updatedRoom
   }

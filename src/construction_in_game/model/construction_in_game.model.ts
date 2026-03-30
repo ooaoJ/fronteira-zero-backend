@@ -1,5 +1,5 @@
 import { Construcao } from "src/construcoes/model/construcao.model";
-import { RoomPlayer } from "src/rooms/model/room-player.model";
+import { RoomPlayer } from "src/room_player/model/room-player.model";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 export enum Status {
@@ -14,12 +14,12 @@ export class ConstructionInGame {
     @PrimaryGeneratedColumn('uuid')
     id: string
 
-    @ManyToOne(() => Construcao, {nullable: false})
-    @JoinColumn({name: "contruction_id"})
+    @ManyToOne(() => Construcao, { nullable: false })
+    @JoinColumn({ name: "contruction_id" })
     constructionBluePrint: Construcao
 
-    @ManyToOne(() => RoomPlayer, {nullable: false})
-    @JoinColumn({name: "roomPlayerId"})
+    @ManyToOne(() => RoomPlayer, { nullable: false })
+    @JoinColumn({ name: "roomPlayerId" })
     roomPlayer: RoomPlayer
 
     @Column({

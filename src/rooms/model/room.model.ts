@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn } from "typeorm";
-import { RoomPlayer } from "./room-player.model";
+import { RoomPlayer } from "src/room_player/model/room-player.model";
 
 export enum RoomStatus {
     WAITING = 'WAITING',

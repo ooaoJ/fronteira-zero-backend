@@ -2,9 +2,10 @@ import { Repository } from "typeorm";
 import { RoomPlayer } from "../model/room-player.model";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { IRoomPlayerRepository } from "../interface/room_player.repository.interface";
 
 @Injectable()
-export class RoomPlayerRepositoryCustom {
+export class RoomPlayerRepositoryCustom implements IRoomPlayerRepository {
     constructor(
         @InjectRepository(RoomPlayer)
         private readonly roomPlayerRepository: Repository<RoomPlayer>
