@@ -50,7 +50,7 @@ export class Construcao extends BaseEntity {
     base_noise: number
 
     @Column({
-        type: "json",
+        type: "simple-json",
         nullable: true
     })
     efects: any[]
