@@ -47,15 +47,17 @@ export class RoomPlayerStatsService {
     }
 
     async dispatchUpdatedStats(construct: Construcao, roomPlayerId: number): Promise<void> {
+        if (!construct.efects || !construct.efects.length) return;
+
         for (const efect of construct.efects) {
-            await this.updatedRoomPlayerStatsQueue.add({
-                data: {
+            await this.updatedRoomPlayerStatsQueue.add(
+                'apply-effect',
+                {
                     roomPlayerId,
                     status: efect.status,
                     value: efect.value,
                     type: efect.type_efect
-                }
-            });
+                });
         }
     }
 

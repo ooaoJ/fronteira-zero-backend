@@ -18,10 +18,6 @@ export class RoomPlayerStatsController {
     async myStats(@Req() req, @Param('room') roomId: string) {
         const data: MyStats = { user_id: req.user.id, room_id: roomId };
 
-        //DEBUG
-        console.log(req.user);
-        console.log(roomId)
-
         return await this.roomPlayerStatsService.myStats(data);
     }
 }
