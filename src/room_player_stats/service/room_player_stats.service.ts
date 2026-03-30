@@ -7,8 +7,8 @@ import {
     ROOM_PLAYER_STATS_REPOSITORY
 } from '../interface/room_player_stats.repository.interface';
 
-import type { IRoomPlayerStatsRepository } from '../interface/room_player_stats.repository.interface';
-import type { UpdatedStats } from '../interface/room_player_stats.types';
+import type { CreateRoomPlayerStats, IRoomPlayerStatsRepository } from '../interface/room_player_stats.repository.interface';
+import type { MyStats, UpdatedStats } from '../interface/room_player_stats.types';
 
 @Injectable()
 export class RoomPlayerStatsService {
@@ -57,5 +57,19 @@ export class RoomPlayerStatsService {
                 }
             });
         }
+    }
+
+    async createRoomPlayerStats(data: CreateRoomPlayerStats): Promise<RoomPlayerStats> {
+        return await this.roomPlayerStatsRepository.create(data);
+    }
+
+    async myStats(data: MyStats): Promise<RoomPlayerStats> {
+        const myStats = await this.roomPlayerStatsRepository.myStats(data);
+
+        if (!myStats) {
+            throw new NotFoundException("Player nao encontrado na partida.");
+        }
+
+        return myStats;
     }
 }

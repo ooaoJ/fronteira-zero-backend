@@ -10,3 +10,8 @@ export type UpdatedStats = {
     value: number;
     effectType?: string
 }
+
+export type MyStats = {
+    user_id: string,
+    room_id: string
+}
