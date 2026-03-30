@@ -49,22 +49,24 @@ export class ConstructionInGameService {
         }
 
         const constructIngame = await this.constructionInGameRepository.save({
-            constructionBluePrint: construct,
+            constructionBluePrint: { id: construct.id },
             roomPlayer: { id: roomPlayer.id },
             current_life: construct.base_life,
             current_atk: construct.base_atk,
             current_def: construct.base_def
         });
 
-        await this.buildDispatch(constructIngame.id, user.id, construct.construction_time);
+        console.log(construct.efects)
+
+        await this.buildDispatch(constructIngame.id, roomPlayer.id, construct, construct.construction_time);
 
         return constructIngame;
     }
 
-    private async buildDispatch(constructionInGameId: string, userId: string, delay: number): Promise<void> {
+    private async buildDispatch(constructionInGameId: string, roomPlayerId: number, construct: Construcao, delay: number): Promise<void> {
         await this.buildingQueue.add(
             'finalize-build',
-            { constructionInGameId, userId },
+            { constructionInGameId, roomPlayerId, construct },
             { delay }
         );
     }
