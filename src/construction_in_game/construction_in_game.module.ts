@@ -6,11 +6,11 @@ import { ConstructionInGameService } from './service/construction_in_game.servic
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConstructionInGame } from './model/construction_in_game.model';
 import { Construcao } from 'src/construcoes/model/construcao.model';
-import { ConstructionInGameConsumer } from './job/constructions_in_game.consumer';
 import { PlayerResourceModule } from 'src/player_resource/player_resource.module';
 import { RoomPlayerStatsService } from 'src/room_player_stats/service/room_player_stats.service';
 import { RoomPlayerStatsModule } from 'src/room_player_stats/room_player_stats.module';
 import { EffectsModule } from 'src/effects/effects.module';
+import { RoomPlayerModule } from 'src/room_player/room_player.module';
 
 @Module({
     imports: [
@@ -19,9 +19,10 @@ import { EffectsModule } from 'src/effects/effects.module';
         RoomsModule,
         PlayerResourceModule,
         RoomPlayerStatsModule,
-        EffectsModule
+        EffectsModule,
+        RoomPlayerModule
     ],
-    providers: [ConstructionInGameService, ConstructionInGameConsumer],
+    providers: [ConstructionInGameService],
     controllers: [ConstructionInGameController]
 })
 export class ConstructionInGameModule { }
