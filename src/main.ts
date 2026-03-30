@@ -26,11 +26,11 @@ async function bootstrap() {
   //Swagger
 
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('Fronteira Zero Api Documentation')
+    .setDescription('Api documentation')
     .setVersion('1.0')
     .addBearerAuth()
-    .addTag('cats')
+    .addTag('Fronteira Zero')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
