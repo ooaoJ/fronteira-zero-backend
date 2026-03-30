@@ -8,7 +8,7 @@ export class EffectStrategySelector {
         private readonly buffStrategy: BuffEffectStrategy
     ) { }
 
-    async selector(typeEfect: string, payload: UpdatedStats): Promise<any> {
+    async selector(typeEfect: string, payload: any): Promise<any> {
         switch (typeEfect) {
             case 'buff':
                 return this.buffStrategy.apply(payload);
